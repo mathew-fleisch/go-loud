@@ -2,17 +2,12 @@ FROM golang:alpine
 
 LABEL maintainer="C J Silverio <ceejceej@gmail.com>"
 
-ARG redis_address=127.0.0.1
-ARG redis_port=6379
-ARG redis_password
-ARG redis_key=LB
-ARG slack_token
-ARG welcome
-
-ENV REDIS_ADDRESS=$redis_address
-ENV REDIS_KEY=$redis_key
-ENV SLACK_TOKEN=$slack_token
-ENV WELCOME_CHANNEL=$welcome
+ARG REDIS_HOST=127.0.0.1
+ARG REDIS_PORT=6379
+ARG REDIS_PASSWORD
+ARG REDIS_KEY=LB
+ARG SLACK_TOKEN
+ARG WELCOME_CHANNEL
 
 RUN mkdir /loudbot
 WORKDIR /loudbot
