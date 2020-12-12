@@ -12,7 +12,7 @@ import (
 	"github.com/go-redis/redis"
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/joho/godotenv"
-	"github.com/nlopes/slack"
+	"github.com/slack-go/slack"
 )
 
 var specials []func(event *slack.MessageEvent) bool
@@ -40,13 +40,16 @@ var patterns = map[string]*regexp.Regexp{
 }
 
 func makeRedis() (r *redis.Client) {
-	address, found := os.LookupEnv("REDIS_ADDRESS")
-	if !found {
-		address = "127.0.0.1:6379"
-	}
-	log.Printf("using redis @ %s to store our data", address)
-	client := redis.NewClient(&redis.Options{Addr: address})
-	return client
+	var redisHost = os.Getenv("REDIS_HOST")
+	var redisPort = os.Getenv("REDIS_PORT")
+	var redisPassword = os.Getenv("REDIS_PASSWORD")
+	log.Printf("using redis @ %s to store our data", redisHost)
+	r = redis.NewClient(&redis.Options{
+		Addr:     redisHost + ":" + redisPort,
+		Password: redisPassword, // no password set
+		DB:       0,             // use default DB
+	})
+	return r
 }
 
 func makeChannelMap() {
