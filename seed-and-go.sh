@@ -4,8 +4,8 @@ if ! [[ -f .env ]]; then
     if [[ -n "$REDIS_HOST" ]]; then
         echo "export REDIS_HOST=$REDIS_HOST" >> .env
     fi
-    if [[ -n "$REDIS_POST" ]]; then
-        echo "export REDIS_POST=$REDIS_POST" >> .env
+    if [[ -n "$REDIS_PORT" ]]; then
+        echo "export REDIS_PORT=$REDIS_PORT" >> .env
     fi
     if [[ -n "$REDIS_PASSWORD" ]]; then
         echo "export REDIS_PASSWORD=$REDIS_PASSWORD" >> .env

@@ -33,19 +33,21 @@ func main() {
 		log.Println("No .env file found; using defaults")
 	}
 
-	prefix, found := os.LookupEnv("REDIS_PREFIX")
+	prefix, found := os.LookupEnv("REDIS_KEY")
 	if !found {
 		prefix = "LB"
 	}
 	rkey := fmt.Sprintf("%s:YELLS", prefix)
 
-	address, found := os.LookupEnv("REDIS_ADDRESS")
-	if !found {
-		address = "127.0.0.1:6379"
-	}
-	log.Printf("using redis @ %s to store our data", address)
-
-	db := redis.NewClient(&redis.Options{Addr: address})
+	var redisHost = os.Getenv("REDIS_HOST")
+	var redisPort = os.Getenv("REDIS_PORT")
+	var redisPassword = os.Getenv("REDIS_PASSWORD")
+	log.Printf("using redis @ %s to store our data", redisHost)
+	db := redis.NewClient(&redis.Options{
+		Addr:     redisHost + ":" + redisPort,
+		Password: redisPassword, // no password set
+		DB:       0,             // use default DB
+	})
 
 	f, err := os.OpenFile("SAVED_LOUDS", os.O_APPEND|os.O_WRONLY, 0644)
 	check(err)

@@ -58,7 +58,7 @@ func main() {
 		log.Println("No .env file found; using defaults")
 	}
 
-	prefix, found := os.LookupEnv("REDIS_PREFIX")
+	prefix, found := os.LookupEnv("REDIS_KEY")
 	if !found {
 		prefix = "LB"
 	}
@@ -66,13 +66,16 @@ func main() {
 	var rkey string
 	rkey = fmt.Sprintf("%s:YELLS", prefix)
 
-	address, found := os.LookupEnv("REDIS_ADDRESS")
-	if !found {
-		address = "127.0.0.1:6379"
-	}
-	log.Printf("using redis @ %s to store our data", address)
+	var redisHost = os.Getenv("REDIS_HOST")
+	var redisPort = os.Getenv("REDIS_PORT")
+	var redisPassword = os.Getenv("REDIS_PASSWORD")
+	log.Printf("using redis @ %s to store our data", redisHost)
+	db := redis.NewClient(&redis.Options{
+		Addr:     redisHost + ":" + redisPort,
+		Password: redisPassword, // no password set
+		DB:       0,             // use default DB
+	})
 
-	db := redis.NewClient(&redis.Options{Addr: address})
 	removeFromFile("SYSTEMANTICS", rkey, db)
 	removeFromFile("STAR_FIGHTING", rkey, db)
 	seedFromFile("SEEDS", rkey, db)
